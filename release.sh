@@ -6,7 +6,7 @@ git fetch
 git checkout release
 
 # Kill Nuxt port nếu đang chạy
-PID=$(lsof -t -iTCP:3000 -sTCP:LISTEN)
+PID=$(lsof -t -iTCP:3000 -sTCP:LISTEN 2>/dev/null)
 [ -n "$PID" ] && kill $PID
 
 # Start Nuxt via PM2
