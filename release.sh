@@ -5,5 +5,5 @@ git branch -D release
 git fetch
 git checkout release
 
-kill $(lsof -t -i:3000)
+lsof -t -i:3000 | xargs -r kill
 pm2 start
