@@ -5,5 +5,9 @@ git branch -D release
 git fetch
 git checkout release
 
-lsof -t -i:3000 | xargs -r kill
-pm2 start ecosystem.config.cjs
+# Kill Nuxt port nếu đang chạy
+PID=$(lsof -t -iTCP:3000 -sTCP:LISTEN)
+[ -n "$PID" ] && kill $PID
+
+# Start Nuxt via PM2
+pm2 start ecosystem.config.cjs --update-env
