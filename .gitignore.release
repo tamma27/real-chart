@@ -1,6 +1,5 @@
 # git release
 # Nuxt dev/build outputs
-.output
 .data
 .nitro
 .cache
