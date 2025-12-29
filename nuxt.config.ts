@@ -6,6 +6,8 @@ export default defineNuxtConfig({
     public: {
       apiBase: 'http://139.180.209.227',
       wsBase: 'ws://139.180.209.227',
+      // apiBase: 'http://localhost:8080',
+      // wsBase: 'ws://localhost:8080',
     },
   },
 })

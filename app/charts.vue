@@ -67,6 +67,16 @@
           placeholder="Buffer"
         />
 
+        <input
+          v-model.number="dtlRange"
+          type="number"
+          step="0.00"
+          min="0"
+          class="tv-max-input"
+          style="width:80px"
+          placeholder="DTL Range"
+        />
+
         <button class="tv-update-btn" @click="updateBacktest">
           Update
         </button>
@@ -169,6 +179,7 @@ const isFullscreen = ref(false)
 const backtestEnabled = ref(false)
 const maxCandles = ref(1000)
 const buffer = ref(0.1)
+const dtlRange = ref(0.0)
 const entryTimes = ref(new Set())
 const exitTimes = ref(new Set())
 
@@ -288,7 +299,8 @@ function onCrosshairMove(param) {
   const priceDiff = c.close - prevC.close
   const pct = ((c.close - prevC.close) / prevC.close) * 100
   const ampl = ((c.high - c.low) / c.low) * 100
-  hoverPct.value = `${priceDiff >= 0 ? '+' : ''}${priceDiff.toFixed(1)} (${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%) | Ampl: ${ampl.toFixed(2)}%`
+  const dtlrange = (c.up - c.down) / c.down * 100
+  hoverPct.value = `${priceDiff >= 0 ? '+' : ''}${priceDiff.toFixed(1)} (${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%) | Ampl: ${ampl.toFixed(2)}% | DTL Range: ${dtlrange.toFixed(2)}%`
 }
 
 function showLatestCandlePct() {
@@ -308,7 +320,8 @@ function showLatestCandlePct() {
   const priceDiff = latest.close - prev.close
   const pct = ((latest.close - prev.close) / prev.close) * 100
   const ampl = ((latest.high - latest.low) / latest.low) * 100
-  hoverPct.value = `${priceDiff >= 0 ? '+' : ''}${priceDiff.toFixed(1)} (${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%) | Ampl: ${ampl.toFixed(2)}%`
+  const dtlrange = (latest.up - latest.down) / latest.down * 100
+  hoverPct.value = `${priceDiff >= 0 ? '+' : ''}${priceDiff.toFixed(1)} (${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%) | Ampl: ${ampl.toFixed(2)}% | DTL Range: ${dtlrange.toFixed(2)}%`
 }
 
 /* ================= UTIL ================= */
@@ -413,7 +426,7 @@ async function loadBacktest() {
   if (loadingHistory.value) return
   loadingHistory.value = true
 
-  const url = `${API_BASE}/api/backtest/dtl?symbol=${activeSymbol.value}&interval=${selectedInterval.value}&buffer=${buffer.value}&max=${maxCandles.value}`
+  const url = `${API_BASE}/api/backtest/dtl?symbol=${activeSymbol.value}&interval=${selectedInterval.value}&buffer=${buffer.value}&dtlRange=${dtlRange.value}&max=${maxCandles.value}`
   const data = await fetch(url).then(r => r.json())
 
   if (!data) return
